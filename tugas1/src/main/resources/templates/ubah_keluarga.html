@@ -8,6 +8,10 @@
 		<div th:replace="fragments/fragment :: header"></div>
 		<h1>Sistem Informasi Kependudukan Online Provinsi DKI Jakarta</h1>
 		<hr/>
+		<div th:if="${sukses=='true'}">
+			<h2>SUKSES!</h2>
+			<h3 th:text="'Keluarga dengan NIK ' + ${klg} + ' berhasil diubah'">NIK Penduduk</h3>
+		</div>
 		<h2>Mengubah Data Keluarga</h2>
 		<form th:object="${keluarga}" action="/keluarga/ubah/{nkk}" method="post">
 		<div>

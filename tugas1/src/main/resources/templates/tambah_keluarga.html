@@ -8,6 +8,10 @@
 		<div th:replace="fragments/fragment :: header"></div>
 		<h1>Sistem Informasi Kependudukan Online Provinsi DKI Jakarta</h1>
 		<hr/>
+		<div th:if="${sukses=='true'}">
+			<h2>SUKSES!</h2>
+			<h3 th:text="'Keluarga dengan NKK ' + ${klg} + ' berhasil ditambahkan'">NKK Keluarga</h3>
+		</div>
 		<h3>Tambah Keluarga</h3>
 		<form th:object="${keluarga}" action="/keluarga/tambah" method="post">
 		<div>

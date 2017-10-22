@@ -2,21 +2,18 @@ package com.example.tugas1.controller;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.tugas1.model.KecamatanModel;
 import com.example.tugas1.model.KelurahanModel;
@@ -46,7 +43,7 @@ public class PendudukController {
 	
 	//mau nambahin umur
 	@RequestMapping(value = "/penduduk", method = RequestMethod.GET)
-	public String viewPendudukByNIK(Model model, @RequestParam (value = "nik", required = false) String nik){
+	public String viewPendudukByNIK(Model model, @RequestParam (value = "nik", required = false) String nik, @ModelAttribute("wafat") String value){
 		if(nik == ""){
 			return "null";
 		}
@@ -55,6 +52,7 @@ public class PendudukController {
 			
 			if(penduduk != null){
 				model.addAttribute("penduduk", penduduk);
+				model.addAttribute("wafat", value);
 	            return "result_nik";
 			}
 			else{
@@ -66,7 +64,7 @@ public class PendudukController {
 	}
 	
 	@RequestMapping(value = "/penduduk/mati", method = RequestMethod.POST)
-	public String mematikanPenduduk(Model model, @ModelAttribute PendudukModel pendudukModel){
+	public String mematikanPenduduk(Model model, @ModelAttribute PendudukModel pendudukModel, RedirectAttributes ra){
 		PendudukModel penduduk = pendudukDAO.dataPenduduk(pendudukModel.getNik());
 		pendudukDAO.changeStatusKematian(penduduk.getNik());
 		List<PendudukModel> jml_keluarga = pendudukDAO.sisa_anggotaKeluarga(penduduk.getId_keluarga());
@@ -74,21 +72,23 @@ public class PendudukController {
 			keluargaDAO.changeValidNKK(penduduk.getId_keluarga());
 		}
 		model.addAttribute("nik", penduduk.getNik());
-		return "result_ubah_kematian";
+		ra.addFlashAttribute("wafat", "true");
+		return "redirect:/penduduk?nik="+ penduduk.getNik();
 	}
 	
 	
 	
-	@RequestMapping(value = "/penduduk/tambah", method = RequestMethod.GET)
-	public String tambahPenduduk(Model model, @ModelAttribute("nik") String nik){
+	@RequestMapping("/penduduk/tambah")
+	public String tambahPenduduk(Model model, @ModelAttribute("pdk") PendudukModel penduduk, @ModelAttribute("sukses") String value){
 		model.addAttribute("penduduk", new PendudukModel());
-		model.addAttribute("nik", nik);
+		model.addAttribute("pdk", penduduk.getNik());
+		model.addAttribute("sukses", value);
 		return "tambah_penduduk";
 	
 	}
 	
 	@RequestMapping(value = "/penduduk/tambah", method = RequestMethod.POST)
-	public String tambahPenduduk(@ModelAttribute PendudukModel penduduk, Model model){
+	public String tambahPenduduk(@ModelAttribute PendudukModel penduduk, Model model, RedirectAttributes ra){
 		String kode = pendudukDAO.generateNIK(penduduk.getId_keluarga());
 		DateFormat sdfr = new SimpleDateFormat("ddMMyy");
 		String tanggal = sdfr.format(penduduk.getTanggal_lahir());
@@ -106,15 +106,19 @@ public class PendudukController {
 			penduduk.setNik(kode + tanggal + index);
 		}
 		pendudukDAO.addPenduduk(penduduk);
-		model.addAttribute("penduduk", penduduk);
-		return "result_tambah_penduduk";
+		ra.addFlashAttribute("sukses", "true");
+		ra.addFlashAttribute("pdk", penduduk);
+		return "redirect:/penduduk/tambah";
 	}
 	
 	@RequestMapping("/penduduk/ubah/{nik}")
-	public String ubahPenduduk(Model model, @PathVariable(value = "nik") String nik){
+	public String ubahPenduduk(Model model, @PathVariable(value = "nik") String nik,
+			@ModelAttribute("sukses") String value, @ModelAttribute("pdk") String nik_penduduk){
 		PendudukModel penduduk = pendudukDAO.dataPenduduk(nik);
 		if(penduduk != null){
 			model.addAttribute("penduduk", penduduk);
+			model.addAttribute("sukses", value);
+			model.addAttribute("pdk", nik_penduduk);
 			return "ubah_penduduk";
 		}
 		else{
@@ -124,7 +128,7 @@ public class PendudukController {
 	}
 	
 	@RequestMapping(value = "/penduduk/ubah/{nik}", method = RequestMethod.POST)
-	public String ubahPenduduk(Model model, @ModelAttribute PendudukModel penduduk){
+	public String ubahPenduduk(Model model, @ModelAttribute PendudukModel penduduk, RedirectAttributes ra){
 		String old_nik = penduduk.getNik();
 		model.addAttribute("old_nik", old_nik);
 		int old_gender = pendudukDAO.old_gender(penduduk.getNik());
@@ -159,7 +163,9 @@ public class PendudukController {
 			}
 			pendudukDAO.changeNIK(old_nik, penduduk.getNik());	
 		}
-		return "result_ubah_penduduk";
+		ra.addFlashAttribute("sukses", "true");
+		ra.addFlashAttribute("pdk", old_nik);
+		return "redirect:/penduduk/ubah/"+penduduk.getNik();
 	}
 	
 

@@ -6,10 +6,13 @@
 	</head>
 	<body>
 		<div th:replace="fragments/fragment :: header"></div>
+		<div th:if="${wafat} == 'true'">
+			<h2>Sukses!</h2>
+    		<h3 th:text="'Penduduk dengan NIK : ' + ${penduduk.nik} + ' sudah tidak aktif'">NIK Penduduk</h3>
+		</div>
 		<h3 th:text="'Lihat Data Penduduk - ' + ${penduduk.nik}">NIK Penduduk</h3>
 		<h3 th:text="'NIK = ' + ${penduduk.nik}">NIK Penduduk</h3>
 		<h3 th:text="'Nama = ' + ${penduduk.nama}">Nama Penduduk</h3>
-		<h3 th:text="'Umur = ' + ${umur}">Umur Penduduk</h3>
 		<h3 th:text="'Tempat/Tanggal Lahir = ' + ${penduduk.tempat_lahir} + ', ' + ${penduduk.tanggal_lahir}">TTL Penduduk</h3>
 		<h3 th:text="'Alamat = ' + ${penduduk.alamat}">Alamat Penduduk</h3>
 		<h3 th:text="'RT/RW = ' + ${penduduk.RT} + '/' + ${penduduk.RW}">RT/RW Penduduk</h3>
@@ -20,18 +23,14 @@
 		<h3 th:text="'Agama = ' + ${penduduk.agama}">Agama Penduduk</h3>
 		<h3 th:text="'Status Perkawinan = ' + ${penduduk.status_perkawinan}">Status Perkawinan Penduduk</h3>
 		<h3 th:text="'Pekerjaan = ' + ${penduduk.pekerjaan}">Pekerjaan Penduduk</h3>
-		<h3 th:if="${penduduk.is_wni=0}">Kewarganegaraan = WNA</h3>
-		<h3 th:unless="${penduduk.is_wni=0}">Kewarganegaraan = WNI</h3>
-		<h3 th:if="${penduduk.is_wafat=0}">Status Kehidupan = Wafat</h3>
-		<h3 th:unless="${penduduk.is_wafat=0}">Status Kehidupan = Hidup</h3>
+		<h3 th:if="${penduduk.is_wni==0}">Kewarganegaraan = WNA</h3>
+		<h3 th:unless="${penduduk.is_wni==0}">Kewarganegaraan = WNI</h3>
+		<h3 th:if="${penduduk.is_wafat==0}">Status Kehidupan = Hidup</h3>
+		<h3 th:unless="${penduduk.is_wafat==0}">Status Kehidupan = Wafat</h3>
 		<form th:object="${penduduk}" action="/penduduk/mati" method="post">
     	<input type="hidden" name="nik" th:value="${penduduk.nik}" />
 		<button type="submit">Ubah Status Kematian</button>
 		</form>
-		<div th:if="${sukses != null}">
-			<h2>Sukses!</h2>
-    		<h3 th:text="'Penduduk dengan NIK : ' + ${nik} + ' sudah tidak aktif'">NIK Penduduk</h3>
-		</div>
 		<div th:replace="fragments/fragment :: footer"></div>
 	</body>
 </html>

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.tugas1.model.KeluargaModel;
 import com.example.tugas1.service.KeluargaService;
@@ -43,14 +44,16 @@ public class KeluargaController {
 		}
 	}
 	
-	@RequestMapping(value = "/keluarga/tambah", method = RequestMethod.GET)
-	public String tambahKeluarga(Model model){
+	@RequestMapping("/keluarga/tambah")
+	public String tambahKeluarga(Model model, @ModelAttribute("klg") KeluargaModel keluarga, @ModelAttribute("sukses") String value){
 		model.addAttribute("keluarga", new KeluargaModel());
+		model.addAttribute("klg", keluarga.getNomor_kk());
+		model.addAttribute("sukses", value);
 		return "tambah_keluarga";
 	}
 	
 	@RequestMapping(value = "/keluarga/tambah", method = RequestMethod.POST)
-	public String tambahKeluarga(@ModelAttribute KeluargaModel keluarga, Model model){
+	public String tambahKeluarga(@ModelAttribute KeluargaModel keluarga, Model model, RedirectAttributes ra){
 		String kode = keluargaDAO.generateNKK(keluarga.getNama_kecamatan());
 		DateFormat sdfr = new SimpleDateFormat("ddMMyy");
 	    Date dateobj = new Date();
@@ -68,15 +71,20 @@ public class KeluargaController {
 			keluarga.setNomor_kk(nkk_data + index);
 		}
 		keluargaDAO.addKeluarga(keluarga);
-		model.addAttribute("keluarga", keluarga);
-		return "result_tambah_keluarga";
+		ra.addFlashAttribute("klg", keluarga);
+		ra.addFlashAttribute("sukses", "true");
+		return "redirect:/keluarga/tambah";
 	}
 	
 	@RequestMapping("/keluarga/ubah/{nkk}")
-	public String ubahKeluarga(Model model, @PathVariable(value = "nkk") String nkk){
+	public String ubahKeluarga(Model model, @PathVariable(value = "nkk") String nkk,
+			@ModelAttribute("sukses") String value, 
+			@ModelAttribute("klg") String nkk_keluarga){
 		KeluargaModel keluarga = keluargaDAO.dataKeluarga(nkk);
 		if(keluarga != null){
 			model.addAttribute("keluarga", keluarga);
+			model.addAttribute("klg", nkk_keluarga);
+			model.addAttribute("sukses", value);
 			return "ubah_keluarga";
 		}
 		else{
@@ -86,7 +94,7 @@ public class KeluargaController {
 	}
 	
 	@RequestMapping(value = "/keluarga/ubah/{nkk}", method = RequestMethod.POST)
-	public String ubahKeluarga(Model model, @ModelAttribute KeluargaModel keluarga){
+	public String ubahKeluarga(Model model, @ModelAttribute KeluargaModel keluarga, RedirectAttributes ra){
 		String old_nkk = keluarga.getNomor_kk();
 		model.addAttribute("old_nkk", old_nkk);
 		String kode = old_nkk.substring(0, 6);
@@ -122,7 +130,9 @@ public class KeluargaController {
 			keluarga.setNomor_kk(nkk_data + index);
 		}
 		keluargaDAO.changeNKK(old_nkk, keluarga.getNomor_kk());
-	    return "result_ubah_keluarga";
+		ra.addFlashAttribute("sukses", "true");
+		ra.addFlashAttribute("klg", old_nkk);
+	    return "redirect:/keluarga/ubah/"+keluarga.getNomor_kk();
 	}
 	
 	

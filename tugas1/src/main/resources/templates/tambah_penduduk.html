@@ -8,6 +8,10 @@
 		<div th:replace="fragments/fragment :: header"></div>
 		<h1>Sistem Informasi Kependudukan Online Provinsi DKI Jakarta</h1>
 		<hr/>
+		<div th:if="${sukses=='true'}">
+			<h2>SUKSES!</h2>
+			<h3 th:text="'Penduduk dengan nik ' + ${pdk} + ' berhasil ditambahkan'">NIK Penduduk</h3>
+		</div>
 		<h3>Tambah Penduduk</h3>
 		<form th:object="${penduduk}" action="/penduduk/tambah" method="post">
 		<div>
