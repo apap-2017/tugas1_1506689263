@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments/fragment :: links">
+    	<title>Sistem Informasi Kependudukan Online Provinsi DKI Jakarta</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+    	<div th:replace="fragments/fragment :: header"></div>
+    	<h3 th:text="'Error! Pencarian penduduk membutuhkan 3 parameter yaitu id kota, id kecamatan, dan id kelurahan'"></h3>
+    	<div th:replace="fragments/fragment :: footer"></div>
+    </body>
+</html>

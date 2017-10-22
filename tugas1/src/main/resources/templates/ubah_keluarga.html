@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head th:replace="fragments/fragment :: links">
+		<title>Sistem Informasi Kependudukan Online Provinsi DKI Jakarta</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	</head>
+	<body>
+		<div th:replace="fragments/fragment :: header"></div>
+		<h1>Sistem Informasi Kependudukan Online Provinsi DKI Jakarta</h1>
+		<hr/>
+		<h2>Mengubah Data Keluarga</h2>
+		<form th:object="${keluarga}" action="/keluarga/ubah/{nkk}" method="post">
+		<div>
+			<label>NKK</label> 
+			<input type="text" name="nomor_kk" readonly="true" th:value="${keluarga.nomor_kk}" />
+		</div>
+		<div>
+			<label>Alamat</label>
+			<input th:field="*{alamat}" type="text" name="alamat" th:value="${keluarga.alamat}"/>
+		</div>
+		<div>
+			<label>RT</label>
+			<input th:field="*{RT}" type="text" name="RT" th:value="${keluarga.RT}"/>
+		</div>
+		<div>
+			<label>RW</label>
+			<input th:field="*{RW}" type="text" name="RW" th:value="${keluarga.RW}"/>
+		</div>
+		<div>
+			<label>Kelurahan/Desa</label>
+			<input th:field="*{nama_kelurahan}" type="text" name="nama_kelurahan" th:value="${keluarga.nama_kelurahan}"/>
+		</div>
+		<div>
+			<label>Kecamatan</label>
+			<input th:field="*{nama_kecamatan}" type="text" name="nama_kecamatan" th:value="${keluarga.nama_kecamatan}"/>
+		</div>
+		<div>
+			<label>Kota</label>
+			<input th:field="*{nama_kota}" type="text" name="nama_kota" th:value="${keluarga.nama_kota}"/>
+		</div>
+		<div>
+			<button type="submit">Update</button>
+		</div>
+	</form>
+		<hr/>
+		<div th:replace="fragments/fragment :: footer"></div>
+	</body>
+</html>

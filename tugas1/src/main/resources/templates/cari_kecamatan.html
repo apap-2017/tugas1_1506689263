@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments/fragment :: links">
+    	<title>Sistem Informasi Kependudukan Online Provinsi DKI Jakarta</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+    	<div th:replace="fragments/fragment :: header"></div>
+    	<!-- tambahain di kota blabla -->
+    	<h2 th:text="'Lihat Data Penduduk Berdasarkan Kecamatan di Kota ' + ${namaKota}">Lihat kecamatan</h2>
+    	
+    	<form action="/penduduk/cari" method="get">
+    		<div>
+    			<h4>Kota/Kabupaten</h4>
+				<select name="kt">
+					<option selected="selected" th:value="${idKota}" th:text="${namaKota}"></option>
+				</select>
+			</div>
+			<h4>Kecamatan</h4>
+    		<div>
+				<select name="kc">
+					<option value="" th:text="'Pilih Kecamatan'">Pilih Kecamatan</option>
+					<option th:each="kecamatan,iterationStatus: ${kecamatan}" th:value="${kecamatan.id}" th:text="${kecamatan.nama_kecamatan}"></option>
+				</select>
+			</div>
+			<button type="submit">Lihat</button>
+    	</form>
+    	<div th:replace="fragments/fragment :: footer"></div>
+    </body>
+</html>
